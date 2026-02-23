@@ -20,7 +20,7 @@ int main (int argc, char **argv)
     splitString(os_path, ':', os_path_list);
 
     // Create list to store history
-    std::vector<std::string> history;
+    std::vector<std::string> history = *readHistory();
 
     // Create variables for storing command user types
     std::string user_command;               // to store command user types in
@@ -87,6 +87,30 @@ int main (int argc, char **argv)
 
 
     return 0;
+}
+
+/*
+    history: pointer to history vector from main
+*/
+void printHistory(std::vector<std::string> *history) {
+    for (int i = 0; i < history->size(); i++) {
+        printf("  %d: %s\n", i, history->at(i).c_str());
+    }
+}
+
+/*
+    history: pointer to history vector from main
+    cmd: the user command to add to history
+*/
+void pushToHistory(std::vector<std::string> *history, std::string cmd) {
+    history->push_back(cmd);
+    if (history->size() > 128) history->erase(history->begin());
+    /* TODO: Write to file */
+}
+
+std::vector<std::string> *readHistory() {
+    /* TODO: Read from file */
+    return new std::vector<std::string>();
 }
 
 /*
