@@ -92,7 +92,7 @@ int main(int argc, char **argv) {
 
             // If not found → error
             if (executable_path == "") {
-                std::cout << command_name << "<command>: Error command not found" << std::endl;
+                std::cout << command_name << ": Error command not found" << std::endl;
                 continue;
             }
 
