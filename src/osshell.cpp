@@ -177,7 +177,7 @@ int main(int argc, char **argv) {
 */
 void printHistory(std::vector<std::string> *history) {
     for (int i = 0; i < history->size(); i++) {
-        printf("%2d: %s\n", i, history->at(i).c_str());
+        printf("%3d: %s\n", i, history->at(i).c_str());
     }
 }
 
