@@ -54,18 +54,14 @@ int main(int argc, char **argv) {
             continue;
         }
 
-        history.push_back(user_command);  // Store command in history
+        pushToHistory(&history, user_command);  // Store command in history
 
         if (user_command == "exit") {
             break;
         }
 
         else if (user_command == "history") {
-            int i;
-            for (i = 0; i < history.size(); i++) {
-                printf("%2d: %s\n", i, history[i].c_str());
-            }
-            printf("------\n");
+            printHistory(&history);
         }
 
         else if (user_command != "") {
@@ -181,7 +177,7 @@ int main(int argc, char **argv) {
 */
 void printHistory(std::vector<std::string> *history) {
     for (int i = 0; i < history->size(); i++) {
-        printf("  %d: %s\n", i, history->at(i).c_str());
+        printf("%2d: %s\n", i, history->at(i).c_str());
     }
 }
 
