@@ -8,6 +8,10 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
+void pushToHistory(std::vector<std::string> *history, std::string cmd);
+std::vector<std::string> *readHistory();
+void printHistory(std::vector<std::string> *history);
+
 bool fileExecutableExists(std::string file_path);
 void splitString(std::string text, char d, std::vector<std::string>& result);
 void vectorOfStringsToArrayOfCharArrays(std::vector<std::string>& list, char ***result);
