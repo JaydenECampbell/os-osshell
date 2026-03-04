@@ -8,9 +8,11 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
+void printHistory(std::vector<std::string> *history, std::string arg);
+void printHistoryEntries(std::vector<std::string> *history, int showLen);
 void pushToHistory(std::vector<std::string> *history, std::string cmd);
 std::vector<std::string> *readHistory();
-void printHistory(std::vector<std::string> *history);
+void saveHistory(std::vector<std::string> *history);
 
 bool fileExecutableExists(std::string file_path);
 void splitString(std::string text, char d, std::vector<std::string> &result);
@@ -60,13 +62,16 @@ int main(int argc, char **argv) {
             break;
         }
 
-        else if (user_command == "history") {
-            printHistory(&history);
-        }
-
         else if (user_command != "") {
             splitString(user_command, ' ', command_list);
             if (command_list.size() == 0) {
+                continue;
+            }
+            if (command_list.at(0) == "history") {
+                std::string arg;
+                if (command_list.size() < 2) arg = "";
+                else arg = command_list.at(1);
+                printHistory(&history, arg);
                 continue;
             }
 
@@ -175,8 +180,37 @@ int main(int argc, char **argv) {
 /*
     history: pointer to history vector from main
 */
-void printHistory(std::vector<std::string> *history) {
-    for (int i = 0; i < history->size(); i++) {
+void printHistory(std::vector<std::string> *history, std::string arg) {
+    if (arg.empty()) {
+        // Print history as usual
+        printHistoryEntries(history, history->size());
+    } else if (arg == "clear") {
+        // Clear history
+        history->clear();
+        saveHistory(history);
+    } else {
+        std::string errorMsg = "Error: history expects an integer > 0 (or 'clear')";
+        try {
+            int showLen = std::stoi(arg);
+            bool argIsNum = std::to_string(showLen).length() == arg.length();
+            if (showLen < 0 || !argIsNum) {
+                std::cout << errorMsg << std::endl;
+                return;
+            } else if (showLen > 128) {
+                showLen = 128;
+            }
+            // Display `arg` most recent entries
+            printHistoryEntries(history, showLen);
+        } catch (std::invalid_argument) {
+            std::cout << errorMsg << std::endl;
+        } catch (std::out_of_range) {
+            std::cout << errorMsg << std::endl;
+        }
+    }
+}
+
+void printHistoryEntries(std::vector<std::string> *history, int showLen) {
+    for (int i = history->size() - showLen; i < history->size(); i++) {
         printf("%3d: %s\n", i, history->at(i).c_str());
     }
 }
@@ -188,12 +222,16 @@ void printHistory(std::vector<std::string> *history) {
 void pushToHistory(std::vector<std::string> *history, std::string cmd) {
     history->push_back(cmd);
     if (history->size() > 128) history->erase(history->begin());
-    /* TODO: Write to file */
+    saveHistory(history);
 }
 
 std::vector<std::string> *readHistory() {
     /* TODO: Read from file */
     return new std::vector<std::string>();
+}
+
+void saveHistory(std::vector<std::string> *history) {
+    /* TODO: Write to file */
 }
 
 /*
