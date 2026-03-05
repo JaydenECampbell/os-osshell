@@ -57,9 +57,9 @@ int main(int argc, char **argv) {
             continue;
         }
 
-        pushToHistory(&history, user_command);  // Store command in history
-
         if (user_command == "exit") {
+            printf("\n"); // required to pass test cases
+            pushToHistory(&history, user_command);
             break;
         }
 
@@ -73,8 +73,11 @@ int main(int argc, char **argv) {
                 if (command_list.size() < 2) arg = "";
                 else arg = command_list.at(1);
                 printHistory(&history, arg);
+                if (arg != "clear") pushToHistory(&history, user_command);
                 continue;
             }
+
+            pushToHistory(&history, user_command);  // Store command in history
 
             std::string executable_path = "";   // Searches path for executable with name of command user entered, and stores full path to that executable here if found
             std::string command_name = command_list[0];
@@ -124,57 +127,6 @@ int main(int argc, char **argv) {
     //   If yes, execute it
     //   If no, print error statement: "<command_name>: Error command not found" (do include newline)
 
-
-
-    /************************************************************************************
-     *   Example code - remove in actual program                                        *
-     ************************************************************************************/
-
-     /*
-     // Shows how to loop over the directories in the PATH environment variable
-     int i;
-     for (i = 0; i < os_path_list.size(); i++)
-     {
-         printf("PATH[%2d]: %s\n", i, os_path_list[i].c_str());
-     }
-     printf("------\n");
-
-     // Shows how to split a command and prepare for the execv() function
-     std::string example_command = "ls -lh";
-     splitString(example_command, ' ', command_list);
-     vectorOfStringsToArrayOfCharArrays(command_list, &command_list_exec);
-     // use `command_list_exec` in the execv() function rather than looping and printing
-     i = 0;
-     while (command_list_exec[i] != NULL)
-     {
-         printf("CMD[%2d]: %s\n", i, command_list_exec[i]);
-         i++;
-     }
-     // free memory for `command_list_exec`
-     freeArrayOfCharArrays(command_list_exec, command_list.size() + 1);
-     printf("------\n");
-
-     // Second example command - reuse the `command_list` and `command_list_exec` variables
-     example_command = "echo \"Hello world\" I am alive!";
-     splitString(example_command, ' ', command_list);
-     vectorOfStringsToArrayOfCharArrays(command_list, &command_list_exec);
-     // use `command_list_exec` in the execv() function rather than looping and printing
-     i = 0;
-     while (command_list_exec[i] != NULL)
-     {
-         printf("CMD[%2d]: %s\n", i, command_list_exec[i]);
-         i++;
-     }
-     // free memory for `command_list_exec`
-     freeArrayOfCharArrays(command_list_exec, command_list.size() + 1);
-     printf("------\n");
-
-
-     /************************************************************************************
-      *   End example code                                                               *
-      ************************************************************************************/
-
-
     return 0;
 }
 
@@ -212,7 +164,7 @@ void printHistory(std::vector<std::string> *history, std::string arg) {
 
 void printHistoryEntries(std::vector<std::string> *history, int showLen) {
     for (int i = history->size() - showLen; i < history->size(); i++) {
-        printf("%3d: %s\n", i, history->at(i).c_str());
+        printf("%3d: %s\n", i + 1, history->at(i).c_str());
     }
 }
 
@@ -228,7 +180,7 @@ void pushToHistory(std::vector<std::string> *history, std::string cmd) {
 
 std::vector<std::string> *readHistory() {
     /* TODO: Read from file */
-    std::vector<std::string>* history = new std::vector<std::string>();
+    std::vector<std::string> *history = new std::vector<std::string>();
     std::ifstream file(".history");
     if (!file.is_open()) {
         return history;
@@ -246,14 +198,14 @@ std::vector<std::string> *readHistory() {
 void saveHistory(std::vector<std::string> *history) {
     /* TODO: Write to file */
     std::ofstream file(".history");
-    if(!file.is_open()) {
+    if (!file.is_open()) {
         return;
     }
 
-    for(int i = 0; i < history->size(); i++) {
+    for (int i = 0; i < history->size(); i++) {
         file << history->at(i) << std::endl;
     }
-    
+
     file.close();
 }
 
