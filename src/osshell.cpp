@@ -245,7 +245,16 @@ std::vector<std::string> *readHistory() {
 
 void saveHistory(std::vector<std::string> *history) {
     /* TODO: Write to file */
+    std::ofstream file(".history");
+    if(!file.is_open()) {
+        return;
+    }
+
+    for(int i = 0; i < history->size(); i++) {
+        file << history->at(i) << std::endl;
+    }
     
+    file.close();
 }
 
 /*
