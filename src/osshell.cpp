@@ -3,6 +3,7 @@
 #include <string>
 #include <cstring>
 #include <sstream>
+#include <fstream>
 #include <vector>
 #include <filesystem>
 #include <unistd.h>
@@ -227,11 +228,24 @@ void pushToHistory(std::vector<std::string> *history, std::string cmd) {
 
 std::vector<std::string> *readHistory() {
     /* TODO: Read from file */
-    return new std::vector<std::string>();
+    std::vector<std::string>* history = new std::vector<std::string>();
+    std::ifstream file(".history");
+    if (!file.is_open()) {
+        return history;
+    }
+
+    std::string line;
+    while (std::getline(file, line)) {
+        history->push_back(line);
+    }
+
+    file.close();
+    return history;
 }
 
 void saveHistory(std::vector<std::string> *history) {
     /* TODO: Write to file */
+    
 }
 
 /*
